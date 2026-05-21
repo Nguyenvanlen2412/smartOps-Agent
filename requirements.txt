@@ -1,0 +1,25 @@
+# Core
+langchain==0.3.27
+langchain-community==0.3.27
+langchain-google-genai==2.1.8
+
+# Vector store
+chromadb==0.6.3
+
+# Backend
+fastapi==0.110.3
+uvicorn[standard]>=0.25.0,<0.26.0
+pydantic==2.8.2
+httpx==0.27.0
+
+# UI
+chainlit==1.1.402
+
+# Utilities
+python-dotenv==1.0.1
+tiktoken==0.7.0
+pypdf==4.3.1
+markdown==3.6
+
+# Testing
+pytest==8.3.2
