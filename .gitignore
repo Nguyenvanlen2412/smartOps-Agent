@@ -1,2 +1,5 @@
 .env
 smartops_project_plan.md
+.venv/
+__pycache__/
+chroma_db/

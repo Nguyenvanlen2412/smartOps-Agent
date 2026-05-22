@@ -95,6 +95,21 @@ The following cannot be returned:
 - Opened headphones and earphones (for hygiene reasons)
 - Items marked "Final Sale" or "Non-Returnable" on the product page
 
+**Q: I threw away the original box. Can I still return the item?**
+Returns generally require original packaging. In some cases, TechShop may approve a partial refund with a packaging deduction fee.
+
+**Q: My refund is late. What should I do?**
+If your refund has not arrived after the stated processing window, contact support with your order ID and refund reference number.
+
+**Q: Can someone else return the item for me?**
+Yes, provided they bring the order number and proof of identity.
+
+**Q: I used reward points—how are they refunded?**
+Refunded reward points are credited back to your account within 24 hours after refund approval.
+
+**Q: Can I return a bundle item separately?**
+Yes, but bundle discounts may be recalculated and partial refunds adjusted accordingly. 
+
 ---
 
 ## 5. Products & Warranty
@@ -131,6 +146,8 @@ Click "Forgot Password" on the login page. Enter your registered email or phone 
 
 **Q: How do I delete my account?**
 Send a deletion request to support@techshop.vn from your registered email. Account deletion is permanent and takes 7 business days to process. All personal data will be removed in compliance with Vietnam's Personal Data Protection Decree (Decree 13/2023/ND-CP).
+
+
 
 ---
 

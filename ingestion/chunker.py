@@ -1,16 +1,16 @@
-from langchain.text_splitter import RecursiveCharacterTextSplitter, MarkdownHeaderTextSplitter, TokenTextSplitter
-from langchain_core import Document
-class Chunker:
-    def __init__(self, chunk_size: int = 1000, chunk_overlap: int = 200):
-        self.chunk_size = chunk_size
-        self.chunk_overlap = chunk_overlap
-        self.text_splitter = MarkdownHeaderTextSplitter(chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap)
-
-    def chunk(self, documents: list[Document]) -> list[Document]:
-        chunked_documents = []
-        for doc in documents:
-            chunks = self.text_splitter.split_text(doc.page_content)
-            for i, chunk in enumerate(chunks):
-                chunked_documents.append(Document(page_content=chunk, metadata={"source": f"{doc.metadata['source']}_chunk_{i}"}))
-        return chunked_documents
+from langchain.text_splitter import RecursiveCharacterTextSplitter, MarkdownHeaderTextSplitter
     
+def text_splitter(page_content: str):
+    headers_to_split_on = [
+        ("#", "Header 1"), ("##", "Header 2"), ("###", "Header 3")
+    ] 
+    
+    markdown_splitter = MarkdownHeaderTextSplitter(headers_to_split_on=headers_to_split_on, strip_headers=True)
+    markdown_header_splits = markdown_splitter.split_text(page_content) # Returns list of Documents
+
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
+    
+    # Use split_documents instead of split_text since markdown_header_splits contains Documents
+    final_chunks = text_splitter.split_documents(markdown_header_splits)
+    
+    return final_chunks

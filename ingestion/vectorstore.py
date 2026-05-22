@@ -1,34 +1,55 @@
-from embedder import Embedder
-from chunker import Chunker
-from loader import FileLoader
+from pathlib import Path
+from chunker import text_splitter
+from loader import load_file
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from dotenv import load_dotenv
-from langchain_core import Document
-
+from langchain_core.documents import Document
 load_dotenv()  # Ensure any necessary environment variables are loaded
 
-class VectorStore:
-    def __init__(self, file_path: str, chunk_size: int = 1000, chunk_overlap: int = 200, model_name: str = "BAAI/bge-large-en-v1.5"):
-        self.file_loader = FileLoader(file_path)
-        self.chunker = Chunker(chunk_size, chunk_overlap)
-        self.embedder = Embedder(model_name)
-
-    def process(self) -> list[Document]:
-        documents = self.file_loader.load()
-        chunked_documents = self.chunker.chunk(documents)
-        embedded_documents = self.embedder.embed(chunked_documents)
-        return embedded_documents
-    
 if __name__ == "__main__":
-    embedder = VectorStore(file_path= [path for path in ["data/techshop_faq.md", "data/techshop_refund_policy.md", "data/techshop_sample_data.md"] if path.endswith(".md")][0])
-    processed_documents = embedder.process()
-    for doc in processed_documents:
-        print(f"Source: {doc.metadata['source']}, Embedding: {doc.metadata['embedding'][:5]}...")
+    # Load documents from a file
+    folder_path = Path("./data")
+    print(folder_path.exists())
+    all_documents = []
 
-    vector_store = Chroma.from_documents(
-        documents=processed_documents,
-        embedding=embedder.embeddings
-    )
-    vector_store.save_local("chroma_vector_store")
-    print("Vector store created with", len(vector_store._collection.get_all_ids()), "documents.")
+    for file in folder_path.glob("*.md"):
+        documents = load_file(str(file))
+        all_documents.extend(documents)
+        print(f"Loaded {len(documents)} documents from {file.name}")
+    
+    # Split the documents into chunks
+    all_chunks = []
+
+    for doc in all_documents:
+        chunks = text_splitter(doc.page_content)
+        for chunk in chunks:
+            chunk.metadata.update(doc.metadata)  # Preserve original metadata
+            all_chunks.append(chunk)
+
+    if not all_chunks:
+        print("No chunks were created from the documents.")
+    else:
+        print(f"Created {len(all_chunks)} chunks from the documents.")
+        model_kwargs = {
+            "device": "cpu" 
+        }
+        encode_kwargs = {
+            "normalize_embeddings": True,
+            "batch_size": 32
+        }
+        model_name = "BAAI/bge-large-en-v1.5"
+        # Embed the document chunks
+        embedding_function = HuggingFaceEmbeddings(
+            model_name=model_name,
+            model_kwargs=model_kwargs,
+            encode_kwargs=encode_kwargs
+            )
+        # Create a vector store and add the embedded documents
+        vector_store = Chroma(
+            collection_name="my_collection",
+            embedding_function=embedding_function,
+            persist_directory="./chroma_db"
+            )
+        vector_store.add_documents(all_chunks)
+        print(f"Added {len(all_chunks)} chunks to the vector store.")

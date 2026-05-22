@@ -78,6 +78,60 @@ A partial refund may be issued in the following circumstances:
 - An item is returned with missing accessories (refund amount reduced by the accessory value).
 - A used/opened item is returned under special approval (a usage deduction of 10–30% may apply).
 
+### A7. Product Exchange Policy
+
+Customers may request an exchange instead of a refund when:
+
+- The product is defective but a replacement is preferred
+- The wrong item was delivered
+- The customer wishes to exchange for a different variant (color/storage size), subject to stock availability
+
+Exchange requests must be made within **7 calendar days** of delivery.
+
+If the replacement item has a higher price, the customer must pay the difference.  
+If it has a lower price, TechShop will refund the difference according to the original payment method.
+
+Only one exchange is permitted per order item.
+
+### A8. Manufacturer Warranty
+
+Many products sold by TechShop include manufacturer warranties ranging from **6 to 24 months**, depending on the product category.
+
+Warranty claims are separate from refund requests and may require direct inspection by an authorized service center.
+
+Warranty does not cover:
+
+- Accidental damage
+- Water damage
+- Unauthorized repairs
+- Software modifications or rooting/jailbreaking
+- Damage caused by misuse
+
+Customers should retain proof of purchase for warranty claims.
+
+### A9. Order Cancellation Policy
+
+Customers may cancel an order before it has been shipped by accessing the "My Orders" section.
+
+Orders marked as **Packed**, **Shipped**, or **Out for Delivery** may no longer be canceled and must follow the return process after delivery.
+
+Refunds for canceled prepaid orders are typically processed within **1–3 business days**.
+
+### A10. Lost or Delayed Shipments
+
+TechShop is responsible for products until confirmed delivery.
+
+Customers must report:
+
+- Missing packages within **48 hours**
+- Delivery discrepancies within **24 hours**
+
+TechShop is not responsible for delays caused by:
+
+- Incorrect shipping information provided by the customer
+- Force majeure events
+- Customs or government inspections
+
 ---
 
 ## Part B: Terms of Service
@@ -134,6 +188,17 @@ These Terms are governed by the laws of the Socialist Republic of Vietnam. Any d
 
 TechShop Vietnam reserves the right to update these Terms at any time. Customers will be notified of material changes via email at least **14 days in advance**. Continued use of the platform after the effective date constitutes acceptance of the updated Terms.
 
+### B9. Fraud Prevention & Abuse
+
+TechShop reserves the right to refuse refunds, suspend accounts, or investigate customers suspected of:
+
+- Excessive return abuse
+- Chargeback fraud
+- Use of stolen payment methods
+- Manipulation of promotional offers
+
+Fraudulent activity may be reported to law enforcement authorities.
+
 ---
 
 ## Part C: Privacy & Data
@@ -159,6 +224,28 @@ We do not sell personal data to third parties. Data may be shared with logistics
 
 Customer data is retained for **5 years** after the last transaction, in compliance with Vietnamese accounting and tax regulations. Upon account deletion, personal identifiers are anonymized; transaction records are retained in anonymized form for audit purposes.
 
+### C4. Customer Data Rights
+
+Customers may request to:
+
+- Access their stored personal data
+- Correct inaccurate information
+- Withdraw marketing consent
+- Request deletion of eligible personal data
+
+Requests may be submitted to: privacy@techshop.vn
+
+TechShop will respond within **30 calendar days**.
+
+## Part D: Customer Support Contact
+
+For assistance regarding refunds, exchanges, or policy questions:
+
+- Email: legal@techshop.vn
+- Customer Support: support@techshop.vn
+- Hotline: +84 1900 1234
+- Live Chat: available on www.techshop.vn
+- Business Hours: Monday–Saturday, 8:00 AM–6:00 PM (ICT)
 ---
 
 *For questions about this policy, contact: legal@techshop.vn*
