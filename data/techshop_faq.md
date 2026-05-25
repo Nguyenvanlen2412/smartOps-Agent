@@ -65,6 +65,15 @@ Yes. Once your order is shipped, you will receive an SMS and email with a tracki
 **Q: What happens if I miss the delivery?**
 Our carrier will attempt delivery up to 3 times. If all attempts fail, the package is held at the nearest carrier depot for 5 days. After that, it is returned to TechShop and you will receive a full refund.
 
+**Q: The item arrived broken. What should I do?**
+Please submit a return request immediately with photos of the damaged item and packaging.
+
+**Q: My package never came.**
+If tracking shows delivered but you did not receive it, contact support within 48 hours.
+
+**Q: I got charged twice.**
+Duplicate charges are usually reversed automatically within 3 business days.
+
 ---
 
 ## 4. Returns & Refunds
