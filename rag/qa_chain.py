@@ -1,7 +1,7 @@
-from retriever import create_retriever
+from rag.retriever import create_retriever
 from langchain_core.prompts import ChatPromptTemplate
-from langchain.chains import create_retrieval_chain
-from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain_classic.chains import create_retrieval_chain
+from langchain_classic.chains.combine_documents import create_stuff_documents_chain
 from langchain_google_genai import ChatGoogleGenerativeAI
 from dotenv import load_dotenv
 
@@ -22,13 +22,15 @@ def create_qa_chain():
     ])
 
     llm = ChatGoogleGenerativeAI(
-        model="gemini-3.5-flash-lite",
+        model="gemini-3.1-flash-lite",
         temperature=0.7,
-        max_tokens=2048
     )
     
     question_answer_chain = create_stuff_documents_chain(llm, prompt)
-    chain = create_retrieval_chain(create_retriever(), question_answer_chain, return_source_documents=True, chain_type_kwargs={"document_variable_name": "context"})
+    chain = create_retrieval_chain(
+        retriever = create_retriever(), 
+        combine_docs_chain=question_answer_chain
+        )
     print("QA chain created with ChatGoogleGenerativeAI and the retriever.")
     return chain
 
@@ -90,7 +92,7 @@ def create_qa_chain():
     
     # 2. Initialize the LLM
     llm = ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash", # Note: ensuring accurate model naming convention
+        model="gemini-3.1-flash-lite", # Note: ensuring accurate model naming convention
         temperature=0.7,
         max_tokens=2048
     )

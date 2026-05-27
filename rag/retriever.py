@@ -1,8 +1,6 @@
-import langchain_community.vectorstores as Chroma
-import langchain_community.embeddings as HuggingFaceEmbeddings
-import langchain_google_genai as ChatGoogleGenerativeAI
+from langchain_community.vectorstores import Chroma
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from dotenv import load_dotenv
-from langchain_core.documents import Document
 load_dotenv()  # Ensure any necessary environment variables are loaded
 
 def create_retriever():
@@ -20,7 +18,7 @@ def create_retriever():
     print("Vector store initialized and ready for use.")
 
     retriever = vector_store.as_retriever(
-        search_type="semantic",
+        search_type="similarity",
         search_kwargs={"k": 3})
     print("Retriever created from the vector store with search parameters: k=3")
     return retriever
