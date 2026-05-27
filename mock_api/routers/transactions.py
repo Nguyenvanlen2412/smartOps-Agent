@@ -1,25 +1,52 @@
-# mock_api/routers/orders.py
-from fastapi import APIRouter, HTTPException, status
+# mock_api/routers/transactions.py
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
+from typing import Optional
 from mock_api.mock_db import TRANSACTIONS
+
+class TransactionResponse(BaseModel):
+    transaction_id: str
+    user_id: str
+    amount_vnd: float
+    payment_method: str  # "VNPay QR", "MoMo", "Cash on Delivery", etc.
+    status: str  # "Success", "Pending", "Failed", "Refunded", etc.
+    timestamp: str
+    linked_order: Optional[str] = None
+    note: Optional[str] = None
 
 router = APIRouter(
     prefix="/transactions",
     tags=["Transactions"]
 )
 
-@router.get("/{transaction_id}", summary="Get transaction details by ID")
-def get_transaction(transaction_id: str):
+@router.get("/{txn_id}", response_model=TransactionResponse, summary="Get transaction details")
+def get_transaction(txn_id: str):
     """
-    Look up a transaction's status, amount, and other details.
-    This is the endpoint utilized by the AI agent's transaction tools.
-    """
-    # Normalize input string if necessary (e.g., stripping whitespace or uppercase)
-    clean_id = transaction_id.strip().upper()
+    Retrieve payment transaction details by ID.
     
-    transaction = TRANSACTIONS.get(clean_id)
-    if not transaction:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Transaction ID '{transaction_id}' not found in our system. Please double-check the ID and try again."
-        )
-    return transaction
+    Shows payment status, amount, method (VNPay QR, MoMo, etc.), and linked order.
+    This endpoint demonstrates understanding of payment transaction lifecycles.
+    
+    Returns:
+        - transaction_id: Transaction identifier
+        - status: "Success", "Pending", "Failed", "Refunded", etc.
+        - amount_vnd: Payment amount in Vietnamese Dong
+        - payment_method: Payment method used (VNPay QR, MoMo, Internet Banking, etc.)
+        - linked_order: Associated order ID (if any)
+        - timestamp: When the transaction was created
+    
+    Raises:
+        HTTPException 404: If transaction not found
+    
+    Example:
+        GET /transactions/TXN-20250520-01133
+        Returns a "Pending" status to test agent handling of incomplete payments.
+    """
+    if txn_id not in TRANSACTIONS:
+        print(f"[TRANSACTION LOOKUP FAILED] ID: {txn_id} - Not found")
+        raise HTTPException(status_code=404, detail=f"Transaction {txn_id} not found")
+    
+    txn = TRANSACTIONS[txn_id]
+    print(f"[TRANSACTION RETRIEVED] ID: {txn_id} | Status: {txn['status']} | Amount: {txn['amount_vnd']} VND | Method: {txn['payment_method']}")
+    
+    return txn

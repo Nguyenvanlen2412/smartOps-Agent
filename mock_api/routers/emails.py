@@ -1,25 +1,30 @@
-# mock_api/routers/orders.py
-from fastapi import APIRouter, HTTPException, status
-from mock_api.mock_db import EMAILS
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
+from mock_api.mock_db import USERS
+from datetime import datetime
 
 router = APIRouter(
     prefix="/emails",
     tags=["Emails"]
 )
 
-@router.get("/{email_id}", summary="Get email details by ID")
-def get_email(email_id: str):
-    """
-    Look up an email status, carrier, tracking number, and estimated delivery.
-    This is the endpoint utilized by the AI agent's tracking tools.
-    """
-    # Normalize input string if necessary (e.g., stripping whitespace or uppercase)
-    clean_id = email_id.strip().upper()
+class EmailRequest(BaseModel):
+    user_id: str
+    subject: str
+    message: str
+@router.post("/notify")
+def notify_email(request: EmailRequest):
+    user = USERS.get(request.user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
     
-    email = EMAILS.get(clean_id)
-    if not email:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Email ID '{email_id}' not found in our system. Please double-check the ID and try again."
-        )
-    return email
+    # Simulate sending email (in real implementation, integrate with email service)
+    print(f"Email sent to {user['name']} ({user['email']}) - Subject: {request.subject}")
+    print(f"Message: {request.message}")
+    
+    return {
+        "recipient_name": user["name"],
+        "recipient_email": user["email"],
+        "subject": request.subject,
+        "timestamp": datetime.utcnow().isoformat() + "Z"
+    }

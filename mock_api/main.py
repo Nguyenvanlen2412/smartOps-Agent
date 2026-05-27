@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 # Import routers (Stubs included for tickets, transactions, emails based on your requirements)
-from mock_api.routers import emails, emails, tickets, orders, transactions
+from mock_api.routers import emails, tickets, orders, transactions
 # from mock_api.routers import tickets, transactions, emails 
 
 app = FastAPI(

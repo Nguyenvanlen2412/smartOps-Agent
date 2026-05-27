@@ -144,23 +144,11 @@ TICKETS = {
     }
 }
 
-EMAILS = {
-    "EML-001": {
-        "email_id": "EML-001",
-        "from_address": "support@techshop.vn",
-        "to_address": "nguyenvanan@example.com",
-        "subject": "Order VN1024 Shipment Update",
-        "body": "Your order VN1024 is in transit and scheduled to arrive by 2025-05-22.",
-        "timestamp": "2025-05-20 09:00:00",
-        "status": "Sent"
-    },
-    "EML-002": {
-        "email_id": "EML-002",
-        "from_address": "support@techshop.vn",
-        "to_address": "lengoclinh@example.com",
-        "subject": "Return Approved for VN1027",
-        "body": "Your return request for order VN1027 has been approved. Pickup is scheduled for 2025-05-22.",
-        "timestamp": "2025-05-20 10:15:00",
-        "status": "Sent"
-    }
+
+USERS = {
+    "U00421": {"name": "Nguyen Van An",  "email": "van.an@gmail.com"},
+    "U00876": {"name": "Tran Thi Bich",  "email": "bich.tran@gmail.com"},
+    "U01133": {"name": "Pham Duc Minh",  "email": "duc.minh@outlook.com"},
+    "U00654": {"name": "Le Ngoc Linh",   "email": "ngoc.linh@yahoo.com"},
+    "U00312": {"name": "Hoang Thanh Tung","email": "thanh.tung@gmail.com"},
 }

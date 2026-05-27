@@ -9,10 +9,13 @@ router = APIRouter(
 
 @router.get("/{order_id}", summary="Get order details by ID")
 def get_order(order_id: str):
+
+    print(f"\n\n🚨🚨🚨 DEBUG: THE ROUTE WAS HIT WITH ID: {order_id} 🚨🚨🚨\n\n")
     """
     Look up an order status, carrier, tracking number, and estimated delivery.
     This is the endpoint utilized by the AI agent's tracking tools.
     """
+
     # Normalize input string if necessary (e.g., stripping whitespace or uppercase)
     clean_id = order_id.strip().upper()
     

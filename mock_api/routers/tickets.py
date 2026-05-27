@@ -1,25 +1,37 @@
-# mock_api/routers/orders.py
-from fastapi import APIRouter, HTTPException, status
+# mock_api/routers/tickets.py
+from fastapi import APIRouter
+from pydantic import BaseModel
+import random
+from datetime import datetime
 from mock_api.mock_db import TICKETS
+
+class TicketRequest(BaseModel):
+    user_id: str
+    issue: str
 
 router = APIRouter(
     prefix="/tickets",
     tags=["Tickets"]
 )
 
-@router.get("/{ticket_id}", summary="Get ticket details by ID")
-def get_ticket(ticket_id: str):
-    """
-    Look up a ticket's status, priority, and other details.
-    This is the endpoint utilized by the AI agent's ticketing tools.
-    """
-    # Normalize input string if necessary (e.g., stripping whitespace or uppercase)
-    clean_id = ticket_id.strip().upper()
+@router.post("", summary="Create a support ticket")
+def create_ticket(body: TicketRequest):
+    ticket_id = f"TKT-{random.randint(1000, 9999)}"
     
-    ticket = TICKETS.get(clean_id)
-    if not ticket:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Ticket ID '{ticket_id}' not found in our system. Please double-check the ID and try again."
-        )
-    return ticket
+    ticket = {
+        "ticket_id": ticket_id,
+        "user_id": body.user_id,
+        "issue": body.issue,
+        "status": "open",
+        "created_at": datetime.now().isoformat()
+    }
+    
+    TICKETS[ticket_id] = ticket    
+    # Log to stdout for demo visibility
+    print(f"[TICKET CREATED] ID: {ticket_id} | User: {body.user_id} | Issue: {body.issue}")
+    
+    return {
+        "ticket_id": ticket_id,
+        "status": "created",
+        "user_id": body.user_id
+    }
