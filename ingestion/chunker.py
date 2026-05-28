@@ -1,4 +1,4 @@
-from langchain.text_splitter import RecursiveCharacterTextSplitter, MarkdownHeaderTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter, MarkdownHeaderTextSplitter
     
 def text_splitter(page_content: str):
     headers_to_split_on = [
