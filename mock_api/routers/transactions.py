@@ -47,6 +47,6 @@ def get_transaction(txn_id: str):
         raise HTTPException(status_code=404, detail=f"Transaction {txn_id} not found")
     
     txn = TRANSACTIONS[txn_id]
-    print(f"[TRANSACTION RETRIEVED] ID: {txn_id} | Status: {txn['status']} | Amount: {txn['amount_vnd']} VND | Method: {txn['payment_method']}")
+    print(f"[TRANSACTION RETRIEVED] ID: {txn_id} | Status: {txn.status} | Amount: {txn.amount_vnd} VND | Method: {txn.payment_method}")
     
     return txn

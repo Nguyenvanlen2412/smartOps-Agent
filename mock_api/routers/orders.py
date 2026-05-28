@@ -25,4 +25,4 @@ def get_order(order_id: str):
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Order ID '{order_id}' not found in our system. Please double-check the ID and try again."
         )
-    return order
+    return order.model_dump()
