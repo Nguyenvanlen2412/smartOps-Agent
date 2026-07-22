@@ -1,3 +1,4 @@
+from asyncio import ReadTransport
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_classic.agents import AgentExecutor, create_tool_calling_agent
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -11,6 +12,7 @@ from agent.tools.rag_tool import rag_tool
 from agent.tools.order_tool import check_order_status_tool
 from agent.tools.ticket_tool import create_ticket_tool
 from agent.tools.email_tool import send_email_tool
+from agent.tools.transaction_tool import check_transaction_status_tool
 
 
 class SmartOpsAgent:
@@ -22,7 +24,13 @@ class SmartOpsAgent:
     def __init__(self, model: str = None, temperature: float = None):
         self.model = model or self.DEFAULT_MODEL
         self.temperature = temperature or self.DEFAULT_TEMPERATURE
-        self.tools = [rag_tool, check_order_status_tool, create_ticket_tool, send_email_tool]
+        self.tools = [
+            rag_tool,
+            check_order_status_tool,
+            create_ticket_tool,
+            send_email_tool,
+            check_transaction_status_tool,
+        ]
         self.memory = ConversationBufferMemory(
             memory_key="chat_history", return_messages=True, output_key="output"
         )
@@ -63,4 +71,7 @@ if __name__ == "__main__":
         if user_input.lower() in ["exit", "quit"]:
             print("Exiting the agent. Goodbye!")
             break
-        print(f"Agent: {agent.invoke(user_input)}")
+
+        response = agent.invoke(user_input)
+        print(f"Agent: {response[0]}")
+        print(type(response))
