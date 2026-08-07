@@ -11,6 +11,18 @@ class UserTable(SQLModel, table=True):
     email: str
 
 
+class ProductTable(SQLModel, table=True):
+    __tablename__ = "products"
+
+    product_id: str = Field(primary_key=True)
+    name: str
+    category: str
+    price_vnd: int
+    stock_quantity: int
+    description: str
+    warranty_months: int = Field(default=12)
+
+
 class OrderItemTable(SQLModel, table=True):
     __tablename__ = "order_items"
 

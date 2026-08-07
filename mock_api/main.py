@@ -6,7 +6,7 @@ from sqlmodel import Session
 
 from mock_api.database import init_db, engine
 from mock_api.seed import seed_initial_data
-from mock_api.routers import emails, tickets, orders, transactions
+from mock_api.routers import emails, tickets, orders, transactions, products, users
 
 
 @asynccontextmanager
@@ -39,6 +39,8 @@ app.include_router(orders.router)
 app.include_router(tickets.router)
 app.include_router(transactions.router)
 app.include_router(emails.router)
+app.include_router(products.router)
+app.include_router(users.router)
 
 
 @app.get("/", tags=["Root"])
