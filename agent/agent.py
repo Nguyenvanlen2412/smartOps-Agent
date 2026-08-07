@@ -1,4 +1,3 @@
-from asyncio import ReadTransport
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_classic.agents import AgentExecutor, create_tool_calling_agent
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -9,8 +8,21 @@ load_dotenv()
 
 from agent.prompt import SYSTEM_PROMPT
 from agent.tools.rag_tool import rag_tool
-from agent.tools.order_tool import check_order_status_tool
-from agent.tools.ticket_tool import create_ticket_tool
+from agent.tools.order_tool import (
+    check_order_status_tool,
+    list_user_orders_tool,
+    cancel_order_tool,
+    update_delivery_address_tool,
+    request_order_return_tool,
+    create_order_tool,
+)
+from agent.tools.product_tool import search_products_tool, get_product_details_tool
+from agent.tools.user_tool import get_user_summary_tool
+from agent.tools.ticket_tool import (
+    create_ticket_tool,
+    list_user_tickets_tool,
+    update_ticket_status_tool,
+)
 from agent.tools.email_tool import send_email_tool
 from agent.tools.transaction_tool import check_transaction_status_tool
 
@@ -18,7 +30,7 @@ from agent.tools.transaction_tool import check_transaction_status_tool
 class SmartOpsAgent:
     """Encapsulates the full agent lifecycle: LLM, tools, memory, and execution."""
 
-    DEFAULT_MODEL = "gemini-3.1-flash-lite"
+    DEFAULT_MODEL = "gemini-3.5-flash-lite"
     DEFAULT_TEMPERATURE = 0.2
 
     def __init__(self, model: str = None, temperature: float = None):
@@ -27,7 +39,17 @@ class SmartOpsAgent:
         self.tools = [
             rag_tool,
             check_order_status_tool,
+            list_user_orders_tool,
+            cancel_order_tool,
+            update_delivery_address_tool,
+            request_order_return_tool,
+            create_order_tool,
+            search_products_tool,
+            get_product_details_tool,
+            get_user_summary_tool,
             create_ticket_tool,
+            list_user_tickets_tool,
+            update_ticket_status_tool,
             send_email_tool,
             check_transaction_status_tool,
         ]
@@ -56,7 +78,18 @@ class SmartOpsAgent:
     def invoke(self, user_input: str) -> str:
         """Send a message to the agent and return the output string."""
         response = self._executor.invoke({"input": user_input})
-        return response.get("output", "")
+        output = response.get("output", "")
+        if isinstance(output, list):
+            texts = []
+            for item in output:
+                if isinstance(item, dict) and "text" in item:
+                    texts.append(item["text"])
+                elif isinstance(item, str):
+                    texts.append(item)
+                else:
+                    texts.append(str(item))
+            return "\n".join(texts)
+        return str(output)
 
     def reset_memory(self):
         """Clear conversation history."""
@@ -65,7 +98,7 @@ class SmartOpsAgent:
 
 if __name__ == "__main__":
     agent = SmartOpsAgent()
-    print("Agent created and ready to use.")
+    print(f"SmartOpsAgent initialized with {len(agent.tools)} tools.")
     while True:
         user_input = input("\nYou: ")
         if user_input.lower() in ["exit", "quit"]:
@@ -73,5 +106,4 @@ if __name__ == "__main__":
             break
 
         response = agent.invoke(user_input)
-        print(f"Agent: {response[0]}")
-        print(type(response))
+        print(f"Agent: {response}")
