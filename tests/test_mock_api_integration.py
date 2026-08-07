@@ -15,9 +15,9 @@ import pytest
 import uvicorn
 
 from mock_api.main import app
-from agent.tools.order_tool import OrderTool
-from agent.tools.ticket_tool import TicketTool
-from agent.tools.email_tool import EmailTool
+from agent.tools.order_tool import check_order_status_tool
+from agent.tools.ticket_tool import create_ticket_tool
+from agent.tools.email_tool import send_email_tool
 from agent.tools.transaction_tool import check_transaction_status
 
 
@@ -62,22 +62,19 @@ def live_api_base_url():
 class TestOrderToolAgainstLiveApi:
 
     def test_known_order(self, live_api_base_url):
-        tool = OrderTool()
-        result = tool._run("VN1024")
+        result = check_order_status_tool.invoke({"order_id": "VN1024"})
         assert "Nguyen Van An" in result
         assert "Status: In Transit" in result
 
     def test_unknown_order(self, live_api_base_url):
-        tool = OrderTool()
-        result = tool._run("VN0000")
+        result = check_order_status_tool.invoke({"order_id": "VN0000"})
         assert "couldn't find any information for Order ID 'VN0000'" in result
 
 
 class TestTicketToolAgainstLiveApi:
 
     def test_create_ticket(self, live_api_base_url):
-        tool = TicketTool()
-        result = tool._run(user_id="U00421", issue="Item arrived damaged")
+        result = create_ticket_tool.invoke({"user_id": "U00421", "issue": "Item arrived damaged"})
         assert result.startswith("Support ticket TKT-")
         assert result.endswith("for user U00421.")
 
@@ -85,13 +82,11 @@ class TestTicketToolAgainstLiveApi:
 class TestEmailToolAgainstLiveApi:
 
     def test_known_user(self, live_api_base_url):
-        tool = EmailTool()
-        result = tool._run("user_id=U00421; subject=Ticket update; content=We are on it.")
+        result = send_email_tool.invoke({"payload": "user_id=U00421; subject=Ticket update; content=We are on it."})
         assert "Email sent to Nguyen Van An (van.an@gmail.com)" in result
 
     def test_unknown_user(self, live_api_base_url):
-        tool = EmailTool()
-        result = tool._run("user_id=U99999; subject=Hi; content=Test")
+        result = send_email_tool.invoke({"payload": "user_id=U99999; subject=Hi; content=Test"})
         assert result == "Could not send email: user not found."
 
 

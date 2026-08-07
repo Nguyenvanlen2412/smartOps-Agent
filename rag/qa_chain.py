@@ -11,7 +11,7 @@ load_dotenv()
 class QAChainBuilder:
     """Builds a retrieval-augmented QA chain with configurable LLM and prompt."""
 
-    DEFAULT_MODEL = "gemini-3.1-flash-lite"
+    DEFAULT_MODEL = "gemini-3.5-flash-lite"
     DEFAULT_TEMPERATURE = 0.7
     DEFAULT_SYSTEM_PROMPT = (
         "You are a helpful assistant.\n"

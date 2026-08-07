@@ -46,7 +46,17 @@ class TestToolRegistration:
         assert tool_names == {
             "search_company_policy_and_db",
             "check_order_status",
+            "list_user_orders_tool",
+            "cancel_order_tool",
+            "update_delivery_address_tool",
+            "request_order_return_tool",
+            "create_order_tool",
+            "search_products_tool",
+            "get_product_details_tool",
+            "get_user_summary_tool",
             "create_ticket",
+            "list_user_tickets_tool",
+            "update_ticket_status_tool",
             "send_email_notification",
             "check_transaction_status",
         }
