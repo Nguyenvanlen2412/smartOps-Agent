@@ -1,26 +1,36 @@
+# 🤖 SmartOps Agent – AI Customer Support & Operations Assistant
+
+[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
+[![LangChain](https://img.shields.io/badge/Framework-LangChain-green.svg)](https://www.langchain.com/)
+[![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688.svg)](https://fastapi.tiangolo.com/)
+[![SQLModel](https://img.shields.io/badge/Database-SQLModel%20%2B%20SQLite-blueviolet.svg)](https://sqlmodel.tiangolo.com/)
+[![ChromaDB](https://img.shields.io/badge/VectorStore-ChromaDB-orange.svg)](https://www.trychroma.com/)
+[![Tests](https://img.shields.io/badge/Tests-47%20Passed-brightgreen.svg)](tests/)
 
 ---
 
 ## 📋 Overview
 
-SmartOps Agent is an intelligent customer support assistant built for **TechShop Vietnam**, a consumer electronics retailer. It leverages **Retrieval-Augmented Generation (RAG)** and **LangChain tool-calling agents** to handle real customer inquiries — from checking order statuses and looking up refund policies to creating support tickets and sending email confirmations — all through natural conversation in both **Vietnamese** and **English**.
+**SmartOps Agent** is an intelligent customer support and operations assistant built for **TechShop Vietnam**, a consumer electronics retailer. It leverages **Retrieval-Augmented Generation (RAG)** and **LangChain tool-calling agents** (powered by **Google Gemini 3.5 Flash**) to automate real customer inquiries — from checking order statuses, modifying delivery addresses, and verifying warranty policies to creating support tickets, dispatching confirmation emails, and looking up transaction details — all through natural conversation in both **Vietnamese** and **English**.
 
-The agent autonomously decides which tools to invoke based on the user's intent, chains multiple actions together (e.g., look up an order → create a ticket → send confirmation email), and cites source documents when answering policy questions.
+The agent autonomously plans and decides which of its **15 specialized tools** to invoke based on user intent, seamlessly chaining multiple operational steps together in a single conversation turn (e.g., *look up order status → verify return policy → generate support ticket → dispatch email notification*).
 
 ---
 
-## ✨ Features
+## ✨ Key Features
 
-| Capability | Description |
+| Feature | Description |
 |---|---|
-| **📚 RAG Knowledge Base** | Answers policy & FAQ questions by retrieving relevant chunks from company documents using ChromaDB + HuggingFace embeddings |
-| **📦 Order Tracking** | Looks up real-time order status, carrier, tracking number, and ETA via mock API |
-| **🎫 Ticket Creation** | Creates support tickets with user ID and issue description |
-| **📧 Email Notifications** | Sends confirmation emails to customers after actions are completed |
-| **💳 Transaction Lookup** | Checks payment/transaction status and details |
-| **🧠 Conversation Memory** | Maintains context across multi-turn conversations |
-| **🌐 Bilingual Support** | Handles queries in both Vietnamese and English |
-| **🔗 Multi-Step Reasoning** | Chains multiple tools in a single conversation turn (e.g., check order → create ticket → send email) |
+| **📚 RAG Knowledge Base** | Grounded answer generation using ChromaDB vector search + `BAAI/bge-large-en-v1.5` embeddings with source citations |
+| **📦 Order Management (6 Tools)** | Check status, list customer orders, cancel orders, update delivery address, request returns, and create new orders |
+| **🛍️ Product & Inventory (2 Tools)** | Search product catalog and query detailed product specifications, stock levels, and warranty information |
+| **🎫 Ticket Lifecycle (3 Tools)** | Create support tickets, list user tickets, and update ticket resolution status |
+| **👤 Customer CRM (1 Tool)** | Fetch user summary profiles and order/ticket history |
+| **📧 Notifications (1 Tool)** | Send personalized email confirmation notices to customers |
+| **💳 Financial Verification (1 Tool)** | Look up transaction status, payment methods, amounts, and banking references |
+| **🧠 Multi-Turn Memory** | Maintains full conversation history and state retention using LangChain `ConversationBufferMemory` |
+| **🌐 Bilingual Support** | Seamlessly handles inquiries in both Vietnamese and English |
+| **🔗 Autonomous Chaining** | Multi-step reasoning capability to invoke multiple tools in a single logical workflow |
 
 ---
 
@@ -29,31 +39,30 @@ The agent autonomously decides which tools to invoke based on the user's intent,
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                      User Interface                             │
-│                   (Chainlit Chat / CLI)                          │
+│                         (CLI)                                   │
 └───────────────────────────┬─────────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                    SmartOps Agent Core                           │
-│            LangChain AgentExecutor + Gemini Flash               │
+│            LangChain AgentExecutor + Gemini 3.5 Flash           │
 │               (with ConversationBufferMemory)                   │
-├──────────┬──────────┬──────────┬──────────┬─────────────────────┤
-│          │          │          │          │                      │
-│  RAG     │  Order   │  Ticket  │  Email   │  Transaction        │
-│  Tool    │  Tool    │  Tool    │  Tool    │  Tool               │
-│          │          │          │          │                      │
-└────┬─────┴────┬─────┴────┬─────┴────┬─────┴────┬────────────────┘
-     │          │          │          │          │
-     ▼          └──────────┴──────────┴──────────┘
-┌──────────┐              │
-│ ChromaDB │              ▼
-│ Vector   │   ┌────────────────────┐
-│ Store    │   │  FastAPI Mock API   │
-│          │   │  ┌──────────────┐  │
-│  (BGE    │   │  │  Mock DB     │  │
-│   Large) │   │  │  (In-Memory) │  │
-└──────────┘   │  └──────────────┘  │
-               └────────────────────┘
+├────────┬────────┬────────┬────────┬────────┬────────┬───────────┤
+│  RAG   │ Order  │ Product│ Ticket │  User  │ Email  │Txn Status │
+│ Tool   │ Tools  │ Tools  │ Tools  │ Tool   │ Tool   │   Tool    │
+│ (1)    │ (6)    │ (2)    │ (3)    │ (1)    │ (1)    │   (1)     │
+└───┬────┴───┬────┴───┬────┴───┬────┴───┬────┴───┬────┴────┬──────┘
+    │        │        │        │        │        │         │
+    ▼        └────────┴────────┴────────┴────────┴─────────┘
+┌──────────┐                            │
+│ ChromaDB │                            ▼
+│ Vector   │              ┌────────────────────────────┐
+│ Store    │              │   FastAPI REST Backend     │
+│ (BGE-    │              │ ┌────────────────────────┐ │
+│ Large)   │              │ │ SQLModel (SQLAlchemy)  │ │
+│          │              │ │   + SQLite Database    │ │
+└──────────┘              │ └────────────────────────┘ │
+                          └────────────────────────────┘
 ```
 
 ---
@@ -63,54 +72,56 @@ The agent autonomously decides which tools to invoke based on the user's intent,
 ```
 smartops-agent/
 │
-├── agent/                          # AI Agent core
-│   ├── agent.py                    # SmartOpsAgent class — LangChain AgentExecutor setup
-│   ├── prompt.py                   # System prompt & behavioral instructions
-│   └── tools/                      # LangChain tool definitions
-│       ├── rag_tool.py             # RAG-based policy/FAQ search
-│       ├── order_tool.py           # Order status lookup (GET /orders/{id})
-│       ├── ticket_tool.py          # Support ticket creation (POST /tickets)
-│       ├── email_tool.py           # Email notification sender (POST /emails/notify)
-│       └── transaction_tool.py     # Transaction status lookup (GET /transactions/{id})
+├── agent/                          # AI Agent Core
+│   ├── agent.py                    # SmartOpsAgent class — LangChain AgentExecutor & Gemini LLM setup
+│   ├── prompt.py                   # System prompt & tool selection instructions
+│   └── tools/                      # 15 LangChain Tool definitions
+│       ├── rag_tool.py             # Policy & FAQ search via RAG QA chain
+│       ├── order_tool.py           # Order status, list, cancel, update address, return, create
+│       ├── product_tool.py         # Search products & get detailed specs
+│       ├── ticket_tool.py          # Create ticket, list tickets, update ticket status
+│       ├── user_tool.py            # User summary profile lookup
+│       ├── email_tool.py           # Email notification dispatcher
+│       └── transaction_tool.py     # Payment/transaction status lookup
 │
-├── rag/                            # RAG query pipeline
-│   ├── retriever.py                # ChromaRetriever — similarity search with BGE embeddings
-│   └── qa_chain.py                 # QAChainBuilder — retrieval chain with Gemini LLM
+├── rag/                            # RAG Pipeline Components
+│   ├── retriever.py                # ChromaRetriever — similarity search using BGE-Large embeddings
+│   └── qa_chain.py                 # QAChainBuilder — retrieval chain with Gemini LLM & source citation
 │
-├── ingestion/                      # Data ingestion pipeline
+├── ingestion/                      # Data Ingestion Pipeline
 │   ├── loader.py                   # Load Markdown files via LangChain TextLoader
 │   ├── chunker.py                  # Split by Markdown headers + recursive character splitting
 │   └── vectorstore.py              # Embed & persist document chunks into ChromaDB
 │
-├── mock_api/                       # FastAPI mock backend
-│   ├── main.py                     # FastAPI app entry point with CORS
-│   ├── mock_db.py                  # In-memory database with typed Pydantic models
+├── mock_api/                       # FastAPI REST Server & Database
+│   ├── main.py                     # FastAPI entry point with CORS & router wiring
+│   ├── database.py                 # SQLModel SQLite database engine & session dependency
+│   ├── models.py                   # SQLModel relational table definitions (Users, Products, Orders, Tickets, Txns)
+│   ├── seed.py                     # Initial seed data generator
 │   └── routers/
-│       ├── orders.py               # GET /orders/{order_id}
-│       ├── transactions.py         # GET /transactions/{txn_id}
-│       ├── tickets.py              # POST /tickets
-│       └── emails.py               # POST /emails/notify
+│       ├── orders.py               # Order endpoints (GET, POST, PATCH, cancel, return)
+│       ├── products.py             # Product lookup endpoints (search, details)
+│       ├── tickets.py              # Support ticket endpoints (POST, GET by user, PATCH)
+│       ├── users.py                # Customer profile & summary endpoints
+│       ├── transactions.py         # Transaction lookup endpoints
+│       └── emails.py               # Email dispatch notification endpoint
 │
-├── ui/                             # Chainlit chat interface
-│   ├── app.py                      # Chainlit app entry point
-│   └── style/
-│       └── style.css               # Custom UI styling
+├── data/                           # RAG Source Knowledge Base
+│   ├── techshop_faq.md             # Store FAQ document
+│   ├── techshop_refund_policy.md   # Return, refund, and shipping policies
+│   ├── techshop_sample_data.md     # Reference catalog data
+│   └── customer_support_chat_log.md# Historical support conversations
 │
-├── data/                           # RAG source documents
-│   ├── techshop_faq.md             # Frequently Asked Questions
-│   ├── techshop_refund_policy.md   # Refund & return policy
-│   ├── techshop_sample_data.md     # Sample order/transaction data
-│   └── customer_support_chat_log.md# Historical chat logs
+├── tests/                          # Automated Test Suite (47 tests)
+│   ├── test_agent.py               # End-to-end agent tool chaining tests
+│   ├── test_tools.py               # Unit tests for all 15 tools
+│   ├── test_ecom_routers.py        # REST API endpoint unit tests
+│   ├── test_mock_api_integration.py# Integration tests against live backend
+│   └── test_retriever.py           # RAG retrieval accuracy & MRR evaluation
 │
-├── tests/                          # Unit & integration tests
-│   ├── test_retriever.py           # RAG retrieval quality tests
-│   ├── test_tools.py               # Agent tool unit tests
-│   └── test_agent.py               # End-to-end agent tests
-│
-├── notebooks/                      # Experimentation & debugging
-├── .env                            # API keys & config (not committed)
-├── .gitignore
-└── requirements.txt                # Python dependencies
+├── notebooks/                      # RAG exploration & agent debugging notebooks
+├── .env                            # Environment variables (API keys & configuration)
+└── requirements.txt                # Project dependencies
 ```
 
 ---
@@ -119,16 +130,15 @@ smartops-agent/
 
 | Layer | Technology | Purpose |
 |---|---|---|
-| **LLM** | Google Gemini 3.1 Flash Lite | Agent reasoning & RAG answer generation |
-| **Agent Framework** | LangChain | Tool-calling agent, memory, prompt management |
-| **Embeddings** | HuggingFace `BAAI/bge-large-en-v1.5` | Document embedding for semantic search |
-| **Vector Store** | ChromaDB | Persistent vector storage & similarity search |
-| **Backend API** | FastAPI + Uvicorn | Mock backend simulating real business systems |
-| **Data Validation** | Pydantic v2 | Request/response models & typed database |
-| **HTTP Client** | httpx | Agent tool → API communication |
-| **Chat UI** | Chainlit | Web-based conversational interface |
-| **Text Processing** | LangChain Text Splitters | Markdown-aware document chunking |
-| **Language** | Python 3.10+ | Core runtime |
+| **LLM Engine** | Google Gemini 3.5 Flash Lite | Agent reasoning, tool decision-making & response generation |
+| **Agent Framework** | LangChain (`create_tool_calling_agent`) | Tool binding, system prompt management, memory handling |
+| **Dense Embeddings** | HuggingFace `BAAI/bge-large-en-v1.5` | 1024-dimensional semantic document embeddings |
+| **Vector Store** | ChromaDB | Local persistent vector store for similarity search |
+| **Backend REST API** | FastAPI + Uvicorn | Async REST microservice backend |
+| **Database & ORM** | SQLModel (SQLAlchemy + Pydantic v2) | Relational ORM models with SQLite persistent database (`smartops.db`) |
+| **HTTP Client** | `httpx` | Asynchronous HTTP client for tool API invocations |
+| **Testing** | `pytest` | Suite of 47 unit, integration, and MRR evaluation tests |
+| **Runtime** | Python 3.10+ | Core runtime environment |
 
 ---
 
@@ -137,7 +147,7 @@ smartops-agent/
 ### Prerequisites
 
 - **Python 3.10+** installed
-- A **Google AI API key** (for Gemini)
+- A **Google Gemini API Key** ([Get your key here](https://aistudio.google.com/))
 
 ### 1. Clone the Repository
 
@@ -146,7 +156,7 @@ git clone https://github.com/Nguyenvanlen2412/smartOps-Agent.git
 cd smartOps-Agent
 ```
 
-### 2. Create a Virtual Environment
+### 2. Create and Activate Virtual Environment
 
 ```bash
 python -m venv .venv
@@ -166,179 +176,120 @@ pip install -r requirements.txt
 
 ### 4. Configure Environment Variables
 
-Create a `.env` file in the project root:
+Create a `.env` file in the root directory:
 
 ```env
 # Google Gemini API Key
 GOOGLE_API_KEY=your-google-api-key-here
 
-# Mock API base URL (default for local development)
+# FastAPI Backend URL
 API_BASE_URL=http://127.0.0.1:8000
 ```
 
-### 5. Ingest Documents into ChromaDB
+### 5. Run Document Ingestion (ChromaDB)
 
-Run the ingestion pipeline to load, chunk, and embed the source documents:
+Process and embed the knowledge base documents into ChromaDB:
 
 ```bash
-cd ingestion
-python vectorstore.py
-cd ..
+python -m ingestion.vectorstore
 ```
 
-This creates a `chroma_db/` directory with the persisted vector store.
+### 6. Start the Backend API Server
 
-### 6. Start the Mock API Server
+Start the FastAPI backend (which automatically initializes and seeds the SQLite database `smartops.db` on first run):
 
 ```bash
 uvicorn mock_api.main:app --reload
 ```
 
-The API will be available at `http://127.0.0.1:8000`. Visit `http://127.0.0.1:8000/docs` for the interactive Swagger documentation.
+The API will be running at `http://127.0.0.1:8000`. Access the interactive Swagger documentation at `http://127.0.0.1:8000/docs`.
 
-### 7. Run the Agent
+### 7. Run the SmartOps Agent CLI
 
-**Option A — CLI mode:**
+In a separate terminal window:
 
 ```bash
 python -m agent.agent
 ```
 
-**Option B — Chainlit UI:**
-
-```bash
-chainlit run ui/app.py
-```
-
 ---
 
-## 💬 Usage
+## 💬 Usage Examples
 
-### Example Conversations
+### 📦 Order Tracking & Management
+```text
+You: Đơn hàng VN1024 của tôi đang ở đâu?
 
-**📦 Order Status Inquiry**
+Agent: Đơn hàng VN1024 của bạn hiện đang trong trạng thái "In Transit" (Đang vận chuyển).
+       • Đơn vị vận chuyển: Giao Hang Nhanh (GHN)
+       • Mã vận đơn: GHN-88291047
+       • Dự kiến giao hàng: 2025-05-22
+       • Địa chỉ nhận: 45 Hoang Quoc Viet, Cau Giay, Hanoi
 ```
-You: Đơn hàng VN1024 giao đến đâu rồi?
 
-Agent: Order VN1024 is currently In Transit.
-       Carrier: Giao Hang Nhanh (GHN)
-       Tracking: GHN-88291047
-       Estimated Delivery: 2025-05-22
-```
-
-**📚 Policy Question (RAG)**
-```
+### 📚 Policy Search (RAG with Citation)
+```text
 You: What is the refund policy for VNPay payments?
 
-Agent: According to our refund policy, VNPay QR payments are refunded
-       to your original VNPay account within 5-7 business days...
+Agent: According to TechShop's policy, refunds for orders paid via VNPay QR are processed 
+       back to your original VNPay account within 5-7 business days after the return item 
+       passes inspection.
        [Source: techshop_refund_policy.md]
 ```
 
-**🎫 Support Ticket + Email (Multi-step)**
+### 🎫 Multi-Step Ticket Creation & Confirmation Email (Chained Actions)
+```text
+You: Tai nghe trong đơn VN1027 của tôi bị hỏng một bên. Hãy hỗ trợ tôi.
+
+Agent: Tôi đã kiểm tra đơn hàng VN1027 (Sony WH-1000XM5) và ghi nhận sản phẩm bị lỗi.
+       1. Đã tạo yêu cầu hỗ trợ kỹ thuật: Ticket TKT-8832 (Độ ưu tiên: High).
+       2. Đã gửi email xác nhận thông tin tới ngoc.linh@yahoo.com.
+       Bộ phận chăm sóc khách hàng sẽ liên hệ với bạn trong vòng 24 giờ làm việc!
 ```
-You: My order VN1027 headphones are defective. Please help.
-
-Agent: [Checks order VN1027 → Finds return already requested]
-       [Creates ticket TKT-XXXX for user U00654]
-       [Sends confirmation email to Le Ngoc Linh]
-
-       I've created support ticket TKT-XXXX for your defective
-       headphones issue. A confirmation email has been sent to
-       ngoc.linh@yahoo.com.
-```
-
-**💳 Transaction Lookup**
-```
-You: Check transaction TXN-20250520-01133
-
-Agent: Transaction ID: TXN-20250520-01133
-       Customer: Pham Duc Minh
-       Status: Pending
-       Amount: 28,990,000 VND
-       Note: Awaiting bank confirmation webhook
-```
-
-### API Endpoints
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/orders/{order_id}` | Retrieve order details by ID |
-| `GET` | `/transactions/{txn_id}` | Retrieve transaction details by ID |
-| `POST` | `/tickets` | Create a new support ticket |
-| `POST` | `/emails/notify` | Send email notification to a user |
 
 ---
 
-## 🧪 Testing
+## 🔌 API Endpoints Reference
 
-### Run Unit Tests
+The FastAPI backend provides full CRUD capabilities powered by SQLModel:
 
-```bash
-pytest tests/ -v
-```
-
-### Test Scenarios
-
-| # | Input | Expected Tool | Expected Behavior |
+| Category | Method | Endpoint | Description |
 |---|---|---|---|
-| 1 | "Đơn hàng VN1024 đang ở đâu?" | `check_order_status` | Returns carrier + ETA from mock DB |
-| 2 | "What is your refund policy?" | `search_company_policy_and_db` | Cites refund policy doc, mentions 7-day window |
-| 3 | "Can I return opened earbuds?" | `search_company_policy_and_db` | Says no, quotes non-returnable items |
-| 4 | "Create a ticket: my screen is cracked" | `create_ticket` | Returns ticket ID (e.g., TKT-0883) |
-| 5 | "Send confirmation email to user U00421" | `send_email_notification` | Confirms email sent |
-| 6 | "What payment methods do you accept?" | `search_company_policy_and_db` | Lists all payment methods from FAQ |
-| 7 | "Check transaction TXN-20250520-01133" | `check_transaction_status` | Returns Pending status |
-| 8 | "What's the weather today?" | None | Politely says it's out of scope |
+| **Orders** | `GET` | `/orders/{order_id}` | Fetch order details by ID |
+| | `GET` | `/orders/user/{user_id}` | List all orders for a specific user |
+| | `POST` | `/orders` | Create a new customer order |
+| | `POST` | `/orders/{order_id}/cancel` | Cancel an eligible order |
+| | `PATCH` | `/orders/{order_id}/address` | Update shipping address |
+| | `POST` | `/orders/{order_id}/return` | Initiate an order return request |
+| **Products** | `GET` | `/products/search?q={query}` | Search product catalog by key terms |
+| | `GET` | `/products/{product_id}` | Get product specs, price, and stock levels |
+| **Tickets** | `POST` | `/tickets` | Create a support ticket |
+| | `GET` | `/tickets/user/{user_id}` | List all support tickets for a user |
+| | `PATCH` | `/tickets/{ticket_id}` | Update ticket status and resolution notes |
+| **Users** | `GET` | `/users/{user_id}/summary` | Get user summary profile and metrics |
+| **Transactions**| `GET` | `/transactions/{txn_id}` | Verify financial transaction status |
+| **Emails** | `POST` | `/emails/notify` | Trigger notification email dispatch |
 
-### Manual API Testing
+---
 
-With the mock server running, you can test endpoints directly:
+## 🧪 Testing & Quality Assurance
+
+The project features a comprehensive **47-test suite** using `pytest` covering units, API router integration, RAG quality, and agent behavior:
 
 ```bash
-# Check an order
-curl http://127.0.0.1:8000/orders/VN1024
-
-# Check a transaction
-curl http://127.0.0.1:8000/transactions/TXN-20250518-00421
-
-# Create a ticket
-curl -X POST http://127.0.0.1:8000/tickets \
-  -H "Content-Type: application/json" \
-  -d '{"user_id": "U00421", "issue": "Screen cracked on delivery"}'
-
-# Send an email notification
-curl -X POST http://127.0.0.1:8000/emails/notify \
-  -H "Content-Type: application/json" \
-  -d '{"user_id": "U00421", "subject": "Ticket Created", "message": "Your ticket has been created."}'
+# Run all tests
+python -m pytest tests/ -v
 ```
 
----
+### Test Coverage Highlights
 
-## 📄 Sample Data
-
-The mock database includes pre-populated data for testing:
-
-- **9 Orders** — statuses: In Transit, Delivered, Pending Payment, Return Requested, Cancelled, Processing, Delayed, Partially Refunded, Shipped
-- **8 Transactions** — statuses: Success, Pending, Collected by Driver, Refunded, Partially Refunded
-- **5 Support Tickets** — priorities: High, Medium, Low; statuses: Open, In Progress, Resolved, Closed
-- **9 Users** — with names and email addresses
+- **Retriever MRR & Quality (`test_retriever.py`)**: Tests Mean Reciprocal Rank (MRR) and semantic retrieval accuracy across 12 domain query scenarios (return windows, warranties, accepted payment methods).
+- **Tool Unit Tests (`test_tools.py`)**: Validates execution logic, error handling, and parameter parsing for all 15 LangChain tools.
+- **Router Integration (`test_ecom_routers.py` & `test_mock_api_integration.py`)**: Verifies FastAPI endpoint responses and SQLModel SQLite database queries.
+- **End-to-End Agent Execution (`test_agent.py`)**: Tests multi-step tool chaining, tool wiring registration, and prompt compliance.
 
 ---
 
-## 🗺️ Roadmap
+## 📄 License
 
-- [ ] **Chainlit UI integration** — full chat interface with tool badges and source citations
-- [ ] **Docker Compose** — containerize FastAPI + ChromaDB for one-command deployment
-- [ ] **LangSmith tracing** — full agent trace visibility for debugging
-- [ ] **Vietnamese embedding model** — switch to `bge-m3` for improved Vietnamese text retrieval
-- [ ] **Ollama support** — swap Gemini for local Llama models for zero-cost inference
-
----
-
-## 📝 License
-
-This project is for educational and portfolio demonstration purposes.
-
----
-
+This project is open-source and available under the [MIT License](LICENSE).

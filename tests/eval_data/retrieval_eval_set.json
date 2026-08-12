@@ -1,0 +1,62 @@
+[
+  {
+    "id": "return_window",
+    "query": "How many days do I have to return an item?",
+    "expected_keywords": ["7 calendar days", "7 days"]
+  },
+  {
+    "id": "non_returnable_items",
+    "query": "What items can I not return?",
+    "expected_keywords": ["non-returnable", "Final Sale", "digital downloads", "Digital products"]
+  },
+  {
+    "id": "credit_card_refund_time",
+    "query": "How long does a refund take if I paid by credit card?",
+    "expected_keywords": ["10 business days", "Credit/Debit"]
+  },
+  {
+    "id": "standard_shipping_fee",
+    "query": "What is the fee for standard shipping?",
+    "expected_keywords": ["30,000 VND", "Standard"]
+  },
+  {
+    "id": "laptop_warranty_period",
+    "query": "What is the warranty period for laptops?",
+    "expected_keywords": ["24 months", "Laptops"]
+  },
+  {
+    "id": "cancel_after_shipped",
+    "query": "Can I cancel my order after it has been shipped?",
+    "expected_keywords": ["no longer be canceled", "Out for Delivery"]
+  },
+  {
+    "id": "accepted_payment_methods",
+    "query": "What payment methods does TechShop accept?",
+    "expected_keywords": ["MoMo", "ZaloPay", "VNPay"]
+  },
+  {
+    "id": "missing_package",
+    "query": "My package never arrived, what should I do?",
+    "expected_keywords": ["48 hours"]
+  },
+  {
+    "id": "forgot_password",
+    "query": "I forgot my password, how do I reset it?",
+    "expected_keywords": ["Forgot Password", "reset link"]
+  },
+  {
+    "id": "reward_points",
+    "query": "How do reward points work?",
+    "expected_keywords": ["Reward Point", "10,000 VND"]
+  },
+  {
+    "id": "no_original_box",
+    "query": "I threw away the original box. Can I still return the item?",
+    "expected_keywords": ["original packaging"]
+  },
+  {
+    "id": "saved_card_safety",
+    "query": "Is it safe to save my card information on TechShop?",
+    "expected_keywords": ["PCI-DSS", "tokenized"]
+  }
+]
